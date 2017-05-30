@@ -7,14 +7,21 @@ import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.dao.DataAccessException;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.jdbc.datasource.ConnectionHandle;
+import org.springframework.orm.jpa.JpaDialect;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionException;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceException;
 import javax.sql.DataSource;
+import java.sql.SQLException;
 import java.util.Map;
 
 @Configuration
@@ -56,7 +63,9 @@ public class PrimaryConfig {
     @Primary
     @Bean(name = "transactionManagerPrimary")
     public PlatformTransactionManager transactionManagerPrimary(EntityManagerFactoryBuilder builder) {
-        return new JpaTransactionManager(entityManagerFactoryPrimary(builder).getObject());
+        JpaTransactionManager jpaTransactionManager= new JpaTransactionManager(entityManagerFactoryPrimary(builder).getObject());
+//        jpaTransactionManager.setJpaDialect(new JpaDialect());
+        return jpaTransactionManager;
     }
 
 }
